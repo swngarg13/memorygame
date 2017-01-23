@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/activity_vertical_margin"
+    android:background="@mipmap/bg"
     tools:context="com.colormemory.HighScores">
 
     <LinearLayout
@@ -23,6 +24,8 @@
             android:gravity="center"
             android:text="Rank"
             android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
             android:layout_weight="1"/>
 
         <TextView
@@ -31,6 +34,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Winner"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
             android:textStyle="bold"
             android:layout_weight="1"/>
 
@@ -40,6 +45,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Score"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
             android:textStyle="bold"
             android:layout_weight="1"/>
     </LinearLayout>

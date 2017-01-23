@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardHolder> {
     private ArrayList<CardModal> cards;
-    private int score = 0, flipped_id = -1, flipped_id2 = -1, match_found = 0;
+    private int score = 0, flipped_id = -1, flipped_id2 = -1;
     private IScoreUpdater updater;
     private Context context;
     private boolean flip = true;
@@ -59,10 +59,12 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardHolder> {
 
         // card removed from board or card already matched
        if (cards.get(position).isRemoveFromBoard()){
-           holder.imageView.setImageResource(android.R.drawable.ic_delete);
+           holder.imageView.setImageResource(R.mipmap.tick);
        }else{
            holder.imageView.setImageResource(android.R.color.transparent);
        }
+
+        holder.imageView.setRotationY(0);
        holder.imageView.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
@@ -93,7 +95,6 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardHolder> {
                                     cards.get(flipped_id).setIsflipped(true);
                                     cards.get(position).setRemoveFromBoard(true);
                                     cards.get(position).setIsflipped(true);
-                                    match_found++;
                                     Toast.makeText(context, "Match found", Toast.LENGTH_SHORT).show();
                                     notifyDataSetChanged();
 
@@ -101,7 +102,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardHolder> {
                                     flipped_id2 = -1;
                                     flip = true;
 
-                                    if (match_found == 8)   // all match are found, add score to database
+                                    if (isGameEnded())   // all match are found, add score to database
                                         updater.updateScore(score);
                                 }else{      // if a match not found
                                     score -= 1;
@@ -159,4 +160,13 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardHolder> {
         }, 1000);
     }
 
+    private boolean isGameEnded(){
+        boolean ended = true;
+        for (CardModal modal : cards){
+            if (!modal.isflipped()){
+                return false;
+            }
+        }
+        return ended;
+    }
 }

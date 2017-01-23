@@ -11,6 +11,8 @@ import com.colormemory.database.DatabaseHandler;
 import com.colormemory.models.ScoreModal;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class HighScores extends AppCompatActivity {
@@ -25,8 +27,17 @@ public class HighScores extends AppCompatActivity {
         list.setHasFixedSize(true);
         list.setLayoutManager(lLayout);
         List<ScoreModal> scores = new DatabaseHandler(this).getAllScores();
+
+        Collections.sort(scores, comparator);
         if (scores != null && scores.size() > 0){
             list.setAdapter(new ScoreAdapter(scores));
         }
     }
+
+    Comparator<ScoreModal> comparator = new Comparator<ScoreModal>() {
+        @Override
+        public int compare(ScoreModal o1, ScoreModal o2) {
+            return o1.getScore() > o2.getScore() ? -1 : 1;
+        }
+    };
 }

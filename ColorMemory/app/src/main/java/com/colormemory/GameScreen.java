@@ -10,6 +10,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -29,18 +31,15 @@ public class GameScreen extends Activity implements IScoreUpdater{
     private int[] images = {R.mipmap.colour1, R.mipmap.colour2, R.mipmap.colour3, R.mipmap.colour4, R.mipmap.colour5, R.mipmap.colour6, R.mipmap.colour7, R.mipmap.colour8};
     private RecyclerView rView;
     private ArrayList<CardModal> cards;
+    private int selected = 4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_screen);
 
-        GridLayoutManager lLayout = new GridLayoutManager(this, 4);
-
         rView = (RecyclerView)findViewById(R.id.list);
-        rView.setHasFixedSize(true);
-        rView.setLayoutManager(lLayout);
 
-        startNewGame();
+        startNewGame(selected);
 
         findViewById(R.id.iv_score).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,23 +49,28 @@ public class GameScreen extends Activity implements IScoreUpdater{
         });
     }
 
-    private void startNewGame(){
+    private void startNewGame(int column){
+        GridLayoutManager lLayout = new GridLayoutManager(this, column);
+
+        rView.setHasFixedSize(true);
+        rView.setLayoutManager(lLayout);
+
         if (cards == null){
             // create 4*4 = 16 position, 2 position for each card
             cards = new ArrayList<>();
             for(int i = 0; i < images.length; i++){
-                CardModal card = new CardModal();
-                card.setImage(images[i]);
-                card.setIsflipped(false);
-                card.setRemoveFromBoard(false);
+                int x = 2;
+                if (column == 8)
+                    x = 4;
 
-                CardModal card1 = new CardModal();
-                card1.setImage(images[i]);
-                card1.setIsflipped(false);
-                card1.setRemoveFromBoard(false);
+                for (int j = 0; j < x; j++){
+                    CardModal card = new CardModal();
+                    card.setImage(images[i]);
+                    card.setIsflipped(false);
+                    card.setRemoveFromBoard(false);
 
-                cards.add(card);
-                cards.add(card1);
+                    cards.add(card);
+                }
             }
         }else{
             for (CardModal modal :cards){
@@ -108,7 +112,7 @@ public class GameScreen extends Activity implements IScoreUpdater{
                 modal.setScore(userp);
                 modal.setTime(new Date().toString());
                 new DatabaseHandler(GameScreen.this).addScore(modal);
-                startNewGame();
+                startNewGame(selected);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -123,10 +127,11 @@ public class GameScreen extends Activity implements IScoreUpdater{
                 modal.setTime(new Date().toString());
                 new DatabaseHandler(GameScreen.this).addScore(modal);
                 dialog.cancel();
-                startNewGame();
+                startNewGame(selected);
             }
         });
         builder.setCancelable(false);
         builder.show();
     }
+
 }
